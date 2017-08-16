@@ -1,6 +1,6 @@
 info:
   title: rackhd api 
-  version: "5.0.0"
+  version: "4.0.0"
 basePath: /api/2.0
 consumes:
 - application/json
@@ -57,6 +57,13 @@ definitions:
     - command
   generic_obj:
     type: object
+  enable_flag:
+    description: Set enable to flag value
+    properties: 
+      enable:
+        type: boolean
+    required:
+    - enable   
   get_user_obj:
     properties:
       role:
@@ -211,12 +218,9 @@ definitions:
         type: object
       service:
         type: string
-      nodeId:
-        type: string
     required:
     - service
     - config
-    - nodeId
     type: object
   obm_led:
     properties:
@@ -607,6 +611,57 @@ paths:
           schema:
             $ref: '#/definitions/Error'
       summary: Patch server configuration
+      tags:
+      - /api/2.0
+      x-authentication-type:
+      - jwt
+      x-privileges:
+      - Write
+      - configModify
+    x-swagger-router-controller: config
+  /config/logcolor:
+    get:
+      description: Get the RackHD log color configuration properties.
+      operationId: configColorGet
+      responses:
+        200:
+          description: Successfully retrieved the log color configuration
+          schema:
+            type: object
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Get log color configuration
+      tags:
+      - /api/2.0
+      x-authentication-type:
+      - jwt
+      x-privileges:
+      - Read
+      - configRead
+    put:
+      consumes:
+      - application/json
+      description: Modify the RackHD server log color configuration.
+      operationId: configColorPut
+      parameters:
+      - description: The configuration properties to be modified
+        in: body
+        name: configColor
+        required: true
+        schema:
+          $ref: '#/definitions/enable_flag'
+      responses:
+        200:
+          description: Successfully modified the configuration
+          schema:
+            type: object
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+      summary: Change log color configuration
       tags:
       - /api/2.0
       x-authentication-type:
